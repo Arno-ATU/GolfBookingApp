@@ -27,6 +27,6 @@ namespace GolfBookingApp.Models
         public int Handicap { get; set; }
 
         // Navigation property for bookings
-        public ICollection<BookingPlayer> BookingPlayers { get; set; }
+        public ICollection<BookingPlayer> BookingPlayers { get; set; } = new List<BookingPlayer>();
     }
 }
