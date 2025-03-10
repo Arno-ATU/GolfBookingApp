@@ -1,0 +1,52 @@
+@page
+@model GolfBookingApp.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Emerald Golf Club</h1>
+    <p class="lead">Where passion for golf meets exceptional service</p>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">Members Area</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Access our member directory, update your profile, or register as a new member.</p>
+                <a asp-page="/Members/Index" class="btn btn-outline-success">Member Directory</a>
+                <a asp-page="/Members/Create" class="btn btn-outline-primary">New Registration</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Tee Time Bookings</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Book your next tee time or check availability for the upcoming week.</p>
+                <a href="#" class="btn btn-outline-primary">Book Tee Time</a>
+                <a href="#" class="btn btn-outline-info">View Schedule</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">About Our Club</h5>
+            </div>
+            <div class="card-body">
+                <p>Emerald Golf Club offers a premier golfing experience with our beautifully maintained course and excellent facilities. Whether you're a seasoned golfer or just starting out, our club provides the perfect environment to enjoy the sport.</p>
+                <p>Use our online system to manage your membership, book tee times, and connect with other members.</p>
+            </div>
+        </div>
+    </div>
+</div>
