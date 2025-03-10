@@ -10,16 +10,16 @@ using GolfBookingApp.Models;
 
 namespace GolfBookingApp.Pages.Members
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel:PageModel
     {
-        private readonly GolfBookingApp.Data.GolfClubContext _context;
+        private readonly GolfClubContext _context;
 
-        public DetailsModel(GolfBookingApp.Data.GolfClubContext context)
+        public DetailsModel(GolfClubContext context)
         {
             _context = context;
         }
 
-        public Member Member { get; set; } = default!;
+        public Member Member { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,16 +28,13 @@ namespace GolfBookingApp.Pages.Members
                 return NotFound();
             }
 
-            var member = await _context.Members.FirstOrDefaultAsync(m => m.Id == id);
+            Member = await _context.Members.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (member is not null)
+            if (Member == null)
             {
-                Member = member;
-
-                return Page();
+                return NotFound();
             }
-
-            return NotFound();
+            return Page();
         }
     }
 }
