@@ -1,41 +1,148 @@
-﻿@page
+@page
 @model GolfBookingApp.Pages.Bookings.CreateModel
 
-        @{
-        ViewData["Title"] = "Create";
-        }
-        
-        <h1>Create</h1>
-        
-    <h4>Booking</h4>
-    <hr />
-    <div class="row">
-    <div class="col-md-4">
-    <form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Booking.BookingDate" class="control-label"></label>
-                <input asp-for="Booking.BookingDate" class="form-control" />
-                <span asp-validation-for="Booking.BookingDate" class="text-danger"></span>
+@{
+    ViewData["Title"] = "Create Booking";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create New Tee Time Booking</h1>
+
+<hr />
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @Model.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Booking Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Booking.BookingDate" class="form-label"></label>
+                            <input asp-for="Booking.BookingDate" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="Booking.BookingDate" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Booking.TeeTime" class="form-label"></label>
+                            <select asp-for="Booking.TeeTime" class="form-select" asp-items="Model.TeeTimeOptions">
+                                <option value="">-- Select Tee Time --</option>
+                            </select>
+                            <span asp-validation-for="Booking.TeeTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Booking.TeeTime" class="control-label"></label>
-                <input asp-for="Booking.TeeTime" class="form-control" />
-                <span asp-validation-for="Booking.TeeTime" class="text-danger"></span>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Player Selection</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Select up to 4 players for this booking.</p>
+                    
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <div class="row mb-3 align-items-end player-row @(i == 0 ? "required-player" : "")">
+                            <div class="col-md-8">
+                                <label class="form-label">Player @(i + 1) @(i == 0 ? "(Required)" : "(Optional)")</label>
+                                <select asp-for="SelectedPlayerIds[i]" class="form-select" asp-items="Model.MemberOptions">
+                                    <option value="">-- Select Member --</option>
+                                </select>
+                                @if (i == 0)
+                                {
+                                    <span asp-validation-for="SelectedPlayerIds[0]" class="text-danger"></span>
+                                }
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label">Current Handicap</label>
+                                <div class="input-group">
+                                    <input type="text" id="player@(i+1)Handicap" name="player@(i+1)Handicap" class="form-control" readonly />
+                                    <button type="button" class="btn btn-outline-secondary refresh-handicap" data-player-index="@i">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            
+            <div class="mb-3">
+                <input type="submit" value="Create Booking" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Update handicap when member is selected
+            $('select[name^="SelectedPlayerIds"]').change(function() {
+                const selectElement = $(this);
+                const selectedValue = selectElement.val();
+                const playerIndex = $(this).attr('name').match(/\d+/)[0];
+                
+                if (selectedValue) {
+                    // Get the member handicap via AJAX
+                    $.ajax({
+                        url: '?handler=GetMemberHandicap',
+                        type: 'GET',
+                        data: { memberId: selectedValue },
+                        headers: {
+                            RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function(handicap) {
+                            $(`#player${parseInt(playerIndex) + 1}Handicap`).val(handicap);
+                        },
+                        error: function() {
+                            $(`#player${parseInt(playerIndex) + 1}Handicap`).val('');
+                        }
+                    });
+                } else {
+                    $(`#player${parseInt(playerIndex) + 1}Handicap`).val('');
+                }
+            });
+            
+            // Initialize handicaps for any pre-selected members
+            $('select[name^="SelectedPlayerIds"]').each(function() {
+                $(this).trigger('change');
+            });
+            
+            // Refresh handicap button
+            $('.refresh-handicap').click(function() {
+                const playerIndex = $(this).data('player-index');
+                const selectElement = $(`select[name="SelectedPlayerIds[${playerIndex}]"]`);
+                
+                if (selectElement.val()) {
+                    selectElement.trigger('change');
+                }
+            });
+        });
+    </script>
 }

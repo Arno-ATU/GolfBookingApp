@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GolfBookingApp.Data;
 using GolfBookingApp.Models;
+using System.Threading.Tasks;
 
 namespace GolfBookingApp.Pages.Bookings
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel:PageModel
     {
-        private readonly GolfBookingApp.Data.GolfClubContext _context;
+        private readonly GolfClubContext _context;
+        private readonly ILogger<DeleteModel> _logger;
 
-        public DeleteModel(GolfBookingApp.Data.GolfClubContext context)
+        public DeleteModel(GolfClubContext context, ILogger<DeleteModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [BindProperty]
-        public Booking Booking { get; set; } = default!;
+        public Booking Booking { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,16 +28,18 @@ namespace GolfBookingApp.Pages.Bookings
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.FirstOrDefaultAsync(m => m.Id == id);
+            // Get booking with players and their member details
+            Booking = await _context.Bookings
+                .Include(b => b.Players)
+                .ThenInclude(p => p.Member)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (booking is not null)
+            if (Booking == null)
             {
-                Booking = booking;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
@@ -48,12 +49,23 @@ namespace GolfBookingApp.Pages.Bookings
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking != null)
+            Booking = await _context.Bookings.FindAsync(id);
+
+            if (Booking != null)
             {
-                Booking = booking;
+                _logger.LogInformation($"Deleting booking ID: {Booking.Id}");
+
+                // All BookingPlayer entries will be automatically deleted due to 
+                // the Cascade DeleteBehavior set in the OnModelCreating method
+
                 _context.Bookings.Remove(Booking);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Booking ID {id} deleted successfully");
+            }
+            else
+            {
+                _logger.LogWarning($"Attempted to delete booking ID {id}, but it was not found");
             }
 
             return RedirectToPage("./Index");

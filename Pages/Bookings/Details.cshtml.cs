@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GolfBookingApp.Data;
 using GolfBookingApp.Models;
+using System.Threading.Tasks;
 
 namespace GolfBookingApp.Pages.Bookings
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel:PageModel
     {
-        private readonly GolfBookingApp.Data.GolfClubContext _context;
+        private readonly GolfClubContext _context;
 
-        public DetailsModel(GolfBookingApp.Data.GolfClubContext context)
+        public DetailsModel(GolfClubContext context)
         {
             _context = context;
         }
 
-        public Booking Booking { get; set; } = default!;
+        public Booking Booking { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,16 +25,18 @@ namespace GolfBookingApp.Pages.Bookings
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.FirstOrDefaultAsync(m => m.Id == id);
+            // Get booking with players and their member details
+            Booking = await _context.Bookings
+                .Include(b => b.Players)
+                .ThenInclude(p => p.Member)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (booking is not null)
+            if (Booking == null)
             {
-                Booking = booking;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            return Page();
         }
     }
 }

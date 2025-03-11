@@ -1,29 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GolfBookingApp.Data;
 using GolfBookingApp.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GolfBookingApp.Pages.Bookings
 {
-    public class IndexModel : PageModel
+    public class IndexModel:PageModel
     {
-        private readonly GolfBookingApp.Data.GolfClubContext _context;
+        private readonly GolfClubContext _context;
 
-        public IndexModel(GolfBookingApp.Data.GolfClubContext context)
+        public IndexModel(GolfClubContext context)
         {
             _context = context;
         }
 
-        public IList<Booking> Booking { get;set; } = default!;
+        public IList<Booking> Bookings { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Booking = await _context.Bookings.ToListAsync();
+            if (_context.Bookings != null)
+            {
+                // Include the related Players for each booking
+                Bookings = await _context.Bookings
+                    .Include(b => b.Players)
+                    .ToListAsync();
+            }
         }
     }
 }
