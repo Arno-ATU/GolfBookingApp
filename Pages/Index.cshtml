@@ -4,49 +4,170 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
+<style>
+    /* Golf-themed colors */
+    :root {
+        --golf-green: #3A6B35;
+        --golf-light-green: #CBD18F;
+        --golf-sand: #E3D18A;
+        --golf-blue: #3A6B8F;
+        --golf-brown: #8B5A2B;
+    }
+    
+    .golf-hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+    }
+    
+    .green-btn {
+        background-color: var(--golf-green);
+        border-color: var(--golf-green);
+        color: white;
+    }
+    
+    .green-btn:hover {
+        background-color: #2A5A25;
+        border-color: #2A5A25;
+        color: white;
+    }
+    
+    .sand-btn {
+        background-color: var(--golf-sand);
+        border-color: var(--golf-sand);
+        color: #333;
+    }
+    
+    .sand-btn:hover {
+        background-color: #D3C17A;
+        border-color: #D3C17A;
+        color: #333;
+    }
+    
+    .blue-btn {
+        background-color: var(--golf-blue);
+        border-color: var(--golf-blue);
+        color: white;
+    }
+    
+    .blue-btn:hover {
+        background-color: #2A5A7F;
+        border-color: #2A5A7F;
+        color: white;
+    }
+    
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .card-header.green-header {
+        background-color: var(--golf-green);
+        color: white;
+    }
+    
+    .card-header.blue-header {
+        background-color: var(--golf-blue);
+        color: white;
+    }
+    
+    .jumbotron-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+</style>
+
+<div class="golf-hero text-center jumbotron-card">
     <h1 class="display-4">Welcome to Ireland's Best Golf Club</h1>
-    <p class="lead">The Best place to play your golf!</p>
+    <p class="lead">Experience world-class golfing in beautiful surroundings</p>
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">Members Area</h5>
+<div class="row mt-4 mb-5">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow">
+            <div class="card-header green-header">
+                <h3 class="mb-0">New Member?</h3>
             </div>
-            <div class="card-body">
-                <p class="card-text">Access our member directory, update your profile, or register as a new member.</p>
-                <a asp-page="/Members/Index" class="btn btn-outline-success">Member Directory</a>
-                <a asp-page="/Members/Create" class="btn btn-outline-primary">New Registration</a>
+            <div class="card-body d-flex flex-column">
+                <p class="card-text flex-grow-1">Join our golf club and enjoy access to our championship course, exclusive facilities, and members-only events.</p>
+                <ul class="mb-4">
+                    <li>World-class 18-hole course</li>
+                    <li>It never rains here, play any day!</li>
+                    <li>Regular tournaments and social events</li>
+                    <li>Online tee time booking system</li>
+                </ul>
+                <a asp-page="/Members/Create" class="btn btn-lg green-btn w-100">Register Now</a>
             </div>
         </div>
     </div>
     
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">Tee Time Bookings</h5>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow">
+            <div class="card-header blue-header">
+                <h3 class="mb-0">Existing Member?</h3>
             </div>
-            <div class="card-body">
-                <p class="card-text">Book your next tee time or check availability for the upcoming week.</p>
-                <a asp-page="/Bookings/Create" class="btn btn-outline-primary">Book Tee Time</a>
-                <a asp-page="/Bookings/Index" class="btn btn-outline-info">View Schedule</a>
+            <div class="card-body d-flex flex-column">
+                <p class="card-text flex-grow-1">Access your account to book tee times, view upcoming events, and manage your membership details.</p>
+                <ul class="mb-4">
+                    <li>Book tee times online</li>
+                    <li>View your upcoming bookings</li>
+                    <li>Update your membership details</li>
+                    <li>Track your handicap</li>
+                </ul>
+                <a asp-page="/Members/Index" class="btn btn-lg blue-btn w-100">Members Directory</a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row mt-3">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="card-title mb-0">About Our Club</h5>
-            </div>
-            <div class="card-body">
-                <p>Ireland's Best Golf Club offers a premier golfing experience with our beautifully maintained course and excellent facilities. Whether you're a seasoned golfer or just starting out, our club provides the perfect environment to enjoy the sport.</p>
-                <p>Use our online system to manage your membership, book tee times, and connect with other members.</p>
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-date" style="font-size: 3rem; color: var(--golf-green);"></i>
+                <h4 class="mt-3">Book a Tee Time</h4>
+                <p>Reserve your spot on the course easily with our online booking system.</p>
+                <a asp-page="/Bookings/Create" class="btn sand-btn">Book Now</a>
             </div>
         </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <i class="bi bi-people" style="font-size: 3rem; color: var(--golf-green);"></i>
+                <h4 class="mt-3">Member Directory</h4>
+                <p>Connect with fellow members and find potential playing partners.</p>
+                <a asp-page="/Members/Index" class="btn sand-btn">View Directory</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar2-week" style="font-size: 3rem; color: var(--golf-green);"></i>
+                <h4 class="mt-3">View Schedule</h4>
+                <p>Check out the upcoming tee times and available slots.</p>
+                <a asp-page="/Bookings/Index" class="btn sand-btn">View Schedule</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4 mb-4 shadow">
+    <div class="card-body">
+        <h3 class="text-center mb-4">About Our Club</h3>
+        <p>Ireland's Best fictional Golf Club offers a nice golfing experience with our beautiful course and excellent facilities.The sun shines on our beautiful course every single day of the year, and thats a guaranatee!</p>
+        <p>Our fictional championship course is set in stunning countryside and has been designed to challenge golfers of all abilities. With our dedicated team of professionals, excellent practice facilities, and welcoming clubhouse, we ensure that every visit is memorable.</p>
     </div>
 </div>
