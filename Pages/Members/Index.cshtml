@@ -12,6 +12,44 @@
     <a asp-page="Create" class="btn btn-primary">Register New Member</a>
 </p>
 
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Filter Members</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" id="filterForm">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Gender</label>
+                    <select name="genderFilter" class="form-select" asp-for="GenderFilter">
+                        <option value="">All Genders</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Handicap Range</label>
+                    <select name="handicapFilter" class="form-select" asp-for="HandicapFilter">
+                        <option value="">All Handicaps</option>
+                        <option value="Below10">Below 10</option>
+                        <option value="11to20">11 to 20</option>
+                        <option value="Above20">Above 20</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+                    <a asp-page="./Index" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Sorting instruction notice -->
+<div class="alert alert-info mb-4">
+	<p class="mb-0"><i class="bi bi-info-circle me-2"></i> <strong>Tip:</strong> Click on <strong>Name</strong> or <strong>Handicap</strong> column headers to sort the list. Click again to reverse the sort order.</p>
+</div>
+
 @if (Model.Members != null && Model.Members.Any())
 {
     <div class="table-responsive">
@@ -22,7 +60,17 @@
                         @Html.DisplayNameFor(model => model.Members[0].MembershipNumber)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Members[0].Name)
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort" asp-route-genderFilter="@Model.GenderFilter" asp-route-handicapFilter="@Model.HandicapFilter">
+                            @Html.DisplayNameFor(model => model.Members[0].Name)
+                            @if (Model.CurrentSort == "name_asc")
+                            {
+                                <i class="bi bi-arrow-up"></i>
+                            }
+                            else if (Model.CurrentSort == "name_desc")
+                            {
+                                <i class="bi bi-arrow-down"></i>
+                            }
+                        </a>
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Members[0].Email)
@@ -31,7 +79,17 @@
                         @Html.DisplayNameFor(model => model.Members[0].Gender)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Members[0].Handicap)
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.HandicapSort" asp-route-genderFilter="@Model.GenderFilter" asp-route-handicapFilter="@Model.HandicapFilter">
+                            @Html.DisplayNameFor(model => model.Members[0].Handicap)
+                            @if (Model.CurrentSort == "handicap_asc")
+                            {
+                                <i class="bi bi-arrow-up"></i>
+                            }
+                            else if (Model.CurrentSort == "handicap_desc")
+                            {
+                                <i class="bi bi-arrow-down"></i>
+                            }
+                        </a>
                     </th>
                     <th>Actions</th>
                 </tr>
@@ -59,16 +117,54 @@
                             <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
                             <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
                             <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            <a asp-page="/Bookings/MemberBookings" asp-route-memberId="@item.Id" class="btn btn-sm btn-success">View Bookings</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+    
+    @if (Model.TotalMembers > 0)
+    {
+        <div class="alert alert-info">
+            <p>Showing @Model.Members.Count out of @Model.TotalMembers total members.</p>
+            @if (!string.IsNullOrEmpty(Model.GenderFilter) || !string.IsNullOrEmpty(Model.HandicapFilter))
+            {
+                <p>
+                    <strong>Active Filters:</strong>
+                    @if (!string.IsNullOrEmpty(Model.GenderFilter))
+                    {
+                        <span class="badge bg-primary me-2">Gender: @Model.GenderFilter</span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.HandicapFilter))
+                    {
+                        <span class="badge bg-primary me-2">
+                            Handicap: 
+                            @(Model.HandicapFilter == "Below10" ? "Below 10" : 
+                              Model.HandicapFilter == "11to20" ? "11 to 20" : 
+                              Model.HandicapFilter == "Above20" ? "Above 20" : Model.HandicapFilter)
+                        </span>
+                    }
+                </p>
+            }
+        </div>
+    }
 }
 else
 {
     <div class="alert alert-info">
         <p>No members found. Please add new members to see them listed here.</p>
     </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Submit form when filters change
+            $('#filterForm select').change(function() {
+                $('#filterForm').submit();
+            });
+        });
+    </script>
 }
