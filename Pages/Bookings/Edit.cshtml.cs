@@ -95,6 +95,20 @@ namespace GolfBookingApp.Pages.Bookings
                 return Page();
             }
 
+            // Check if the tee time is already booked (excluding this booking)
+            var teeTimeAlreadyBooked = await _context.Bookings
+                .AnyAsync(b => b.BookingDate.Date == Booking.BookingDate.Date &&
+                               b.TeeTime == Booking.TeeTime &&
+                               b.Id != Booking.Id);
+
+            if (teeTimeAlreadyBooked)
+            {
+                ModelState.AddModelError(string.Empty, $"Tee time {Booking.TeeTime.ToString(@"hh\:mm")} on {Booking.BookingDate.ToShortDateString()} is already booked.");
+                await LoadMembersAsync();
+                CreateTeeTimeOptions();
+                return Page();
+            }
+
             // Check for existing booking on the same day for any selected member (excluding current booking)
             var bookingDate = Booking.BookingDate.Date;
             var existingBookings = new HashSet<int>();
