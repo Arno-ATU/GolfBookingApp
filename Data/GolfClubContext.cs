@@ -14,7 +14,6 @@ namespace GolfBookingApp.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<BookingPlayer> BookingPlayers { get; set; }
 
-        // Add this method for Phase 1.3
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -31,11 +30,6 @@ namespace GolfBookingApp.Data
                 .WithMany(b => b.Players)
                 .HasForeignKey(bp => bp.BookingId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // Optional: Add seed data if desired
-            // modelBuilder.Entity<Member>().HasData(
-            //    new Member { Id = 1, MembershipNumber = "M001", Name = "John Smith", ... }
-            // );
         }
     }
 }

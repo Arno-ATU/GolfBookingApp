@@ -18,13 +18,13 @@ namespace GolfBookingApp.Data
 
         public async Task SeedDatabase()
         {
-            // Only seed if the database is empty
+            // Seed when the database is empty
             if (!_context.Members.Any())
             {
                 // Path to the JSON file
                 string jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "members-seed.json");
 
-                // Read and deserialize the JSON file
+                // Read the JSON file
                 string jsonData = await File.ReadAllTextAsync(jsonFilePath);
                 var members = JsonSerializer.Deserialize<List<Member>>(jsonData, new JsonSerializerOptions
                 {

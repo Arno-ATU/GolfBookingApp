@@ -130,20 +130,11 @@
                 }
             });
             
-            // Initialize handicaps for any pre-selected members
+            // Gwt the handicaps for any pre-selected members
             $('select[name^="SelectedPlayerIds"]').each(function() {
                 $(this).trigger('change');
             });
             
-            // Refresh handicap button
-            $('.refresh-handicap').click(function() {
-                const playerIndex = $(this).data('player-index');
-                const selectElement = $(`select[name="SelectedPlayerIds[${playerIndex}]"]`);
-                
-                if (selectElement.val()) {
-                    selectElement.trigger('change');
-                }
-            });
         });
     </script>
 }

@@ -165,7 +165,7 @@ namespace GolfBookingApp.Pages.Bookings
 
         private void CreateTeeTimeOptions()
         {
-            // Generate tee times at 15-minute intervals from 7:00 AM to 7:00 PM
+            // Generate teee times at 15-minute intervals from 7:00 AM to 7:00 PM
             var teeTimeOptions = new List<SelectListItem>();
             var startTime = new TimeSpan(7, 0, 0); // 7:00 AM
             var endTime = new TimeSpan(19, 0, 0);  // 7:00 PM

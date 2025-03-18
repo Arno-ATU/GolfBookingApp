@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GolfBookingApp.Migrations
 {
     [DbContext(typeof(GolfClubContext))]
-    [Migration("20250310144341_CheckMember")]
-    partial class CheckMember
+    [Migration("20250318132032_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
