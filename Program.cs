@@ -24,34 +24,30 @@ builder.Services.AddDbContext<GolfClubContext>(options =>
             errorNumbersToAdd: null)
     ));
 
+// Register the DbSeeder
+builder.Services.AddScoped<DbSeeder>();
+
 var app = builder.Build();
 
-// Ensure database is created
+// checking if the database is created and seeded
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<GolfClubContext>();
-        // This will create the database if it doesn't exist
-        context.Database.EnsureCreated();
+    var context = services.GetRequiredService<GolfClubContext>();
 
-        // Log success
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Database has been created or already exists.");
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred creating the database.");
-    }
+    // Create the database if it doesn't exist
+    context.Database.EnsureCreated();
+
+    // Seed the database
+    var seeder = services.GetRequiredService<DbSeeder>();
+    seeder.SeedDatabase().Wait();
 }
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days
     app.UseHsts();
 }
 
