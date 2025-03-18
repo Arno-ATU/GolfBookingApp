@@ -77,12 +77,7 @@
                             
                             <div class="col-md-4">
                                 <label class="form-label">Current Handicap</label>
-                                <div class="input-group">
-                                    <input type="text" id="player@(i+1)Handicap" name="player@(i+1)Handicap" class="form-control" readonly />
-                                    <button type="button" class="btn btn-outline-secondary refresh-handicap" data-player-index="@i">
-                                        <i class="bi bi-arrow-clockwise"></i>
-                                    </button>
-                                </div>
+                                <input type="text" id="player@(i+1)Handicap" name="player@(i+1)Handicap" class="form-control" readonly />
                             </div>
                         </div>
                     }
@@ -132,16 +127,6 @@
             // Initialize handicaps for any pre-selected members
             $('select[name^="SelectedPlayerIds"]').each(function() {
                 $(this).trigger('change');
-            });
-            
-            // Refresh handicap button
-            $('.refresh-handicap').click(function() {
-                const playerIndex = $(this).data('player-index');
-                const selectElement = $(`select[name="SelectedPlayerIds[${playerIndex}]"]`);
-                
-                if (selectElement.val()) {
-                    selectElement.trigger('change');
-                }
             });
         });
     </script>
